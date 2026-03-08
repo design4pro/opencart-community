@@ -1,0 +1,77 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "name": "OpenCart Languages",
+  "description": "Multi-language packages for OpenCart e-commerce platform",
+  "theme": "maple",
+  "languages": [
+    "en",
+    "pl"
+  ],
+  "colors": {
+    "primary": "#0096e6",
+    "light": "#f0f7fc",
+    "dark": "#1a1a2e"
+  },
+  "logo": {
+    "light": "/logo-light.svg",
+    "dark": "/logo-dark.svg"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "GitHub",
+        "href": "https://github.com/design4pro/opencart",
+        "target": "_blank"
+      }
+    ]
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Getting Started",
+        "icon": "rocket",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "overview",
+              "getting-started/installation",
+              "getting-started/purchase",
+              "getting-started/support"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Languages",
+        "icon": "globe",
+        "groups": [
+          {
+            "group": "Languages",
+            "pages": [
+              "languages/polish"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Development",
+        "icon": "hammer",
+        "groups": [
+          {
+            "group": "Development",
+            "pages": [
+              "development/building",
+              "development/translating"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/design4pro/opencart"
+    }
+  }
+}
