@@ -1,2 +1,7 @@
 **/*/CLAUDE.md
 !./CLAUDE.md
+.claude/*
+!.claude/scripts/
+!.claude/skills/
+.DS_Store
+docs/

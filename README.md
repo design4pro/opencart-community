@@ -1,35 +1,78 @@
-# OpenCart Language Packages
+# OpenCart Extensions by DESIGN4PRO
 
-Multi-language packages for OpenCart e-commerce platform, developed and maintained by DESIGN4PRO.
+Professional extensions and language packages for OpenCart e-commerce platform. Trusted by thousands of store owners worldwide.
 
-## Documentation
+---
 
-Full documentation is available at: **[opencart.design4.pro](https://opencart.design4.pro)**
+## About DESIGN4PRO
 
-### Languages
+DESIGN4PRO is a leading developer of OpenCart extensions with over **12 years of experience** in the e-commerce ecosystem. We specialize in creating high-quality, professionally localized extensions that help store owners expand their reach to international markets.
 
-- **Polish (pl-pl)** - Complete translation package for OpenCart 4.1.x
-- More languages coming soon...
+Our team is dedicated to providing:
 
-### Quick Links
+- **100% Translation Coverage** - Every string translated by native speakers
+- **Regular Updates** - Compatible with the latest OpenCart versions
+- **Professional Support** - Direct assistance from experienced developers
+- **Easy Installation** - One-click setup through OpenCart's extension installer
 
-- [Installation Guide](https://opencart.design4.pro/getting-started/installation)
-- [Purchase](https://opencart.design4.pro/getting-started/purchase)
-- [Support](https://opencart.design4.pro/getting-started/support)
-- [Building Packages](https://opencart.design4.pro/development/building)
-- [Translating](https://opencart.design4.pro/development/translating)
+---
 
-## Community Support & Discussion
+## Extensions
 
-Join our GitHub Discussions for Polish Language Pack:
+### Language Packs
 
-- **[Installation](https://github.com/design4pro/opencart-community/discussions/7)** - Step-by-step installation guide
-- **[Configuration](https://github.com/design4pro/opencart-community/discussions/8)** - Detailed configuration settings
-- **[FAQ](https://github.com/design4pro/opencart-community/discussions/9)** - Frequently asked questions
-- **[Feedback & Support](https://github.com/design4pro/opencart-community/discussions/10)** - Share your experience and get help
+| Extension | Description | Status |
+|-----------|-------------|--------|
+| [Polish Language Pack](extensions/language/oc-language-pl.md) | Complete Polish localization for OpenCart 4.1.x | Active |
+| Ukrainian Language Pack | Ukrainian translation for OpenCart | Coming Soon |
+| French Language Pack | French translation for OpenCart | Coming Soon |
+| German Language Pack | German translation for OpenCart | Coming Soon |
 
-Have questions? Check our [Q&A category](https://github.com/design4pro/opencart-community/discussions/categories/q-a) or report translation issues on [GitHub Issues](https://github.com/design4pro/opencart-community/issues).
+### Themes
 
-## License
+| Extension | Description | Status |
+|-----------|-------------|--------|
+| Default Theme | Modern responsive theme for OpenCart 4.x | Coming Soon |
 
-See [LICENSE](./LICENSE) file for details.
+---
+
+## Supported Versions
+
+| Version | Status |
+|---------|--------|
+| OpenCart 4.1.0.3 | Recommended |
+| OpenCart 4.1.0.2 | Supported |
+| OpenCart 4.1.0.1 | Supported |
+| OpenCart 4.1.0.0 | Supported |
+
+> All extensions are tested thoroughly before release to ensure maximum compatibility and stability.
+
+---
+
+## Quick Links
+
+- [Download from OpenCart Marketplace](https://www.opencart.com/index.php?route=marketplace/extension/info&extension_id=48243) - Get extensions
+- [Installation Guide](getting-started/installation.md) - Step-by-step installation
+- [Purchase](getting-started/purchase.md) - Licensing and pricing
+- [Contact Support](mailto:dev@design4.pro) - Get in touch
+
+---
+
+## Themes (Coming Soon)
+
+We are currently working on custom themes for OpenCart 4.x. Stay tuned for:
+
+- Modern, responsive designs
+- Optimized for conversion
+- Built with the latest OpenCart standards
+- Regular updates and support
+
+---
+
+## Support & Feedback
+
+For technical support or to report issues, please use our [GitHub Discussions](https://github.com/design4pro/opencart-community/discussions) page.
+
+---
+
+*Last updated: March 2026*
