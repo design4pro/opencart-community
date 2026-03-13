@@ -22,20 +22,6 @@ jobs:
           python-version: "3.12"
       - run: pip install zensical
       - run: zensical build
-      - run: |
-          cat > site/index.html << 'EOF'
-          <!DOCTYPE html>
-          <html lang="en">
-          <head>
-              <meta charset="UTF-8">
-              <meta http-equiv="refresh" content="0;url=/en/">
-              <title>Redirecting...</title>
-          </head>
-          <body>
-              <p>Redirecting to <a href="/en/">English version</a>...</p>
-          </body>
-          </html>
-          EOF
       - uses: actions/upload-pages-artifact@v4
         with:
           path: site

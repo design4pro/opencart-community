@@ -42,28 +42,21 @@ dev_addr = "localhost:8000"
 extra_css = ["stylesheets/extra.css"]
 extra_javascript = ["javascripts/home-animation.js"]
 
-# Navigation structure - English (default)
+# Navigation structure - English only
 nav = [
-    { "Home" = "en/index.md" },
+    { "Home" = "index.md" },
     { "Getting Started" = [
-        "en/getting-started/installation.md",
-        "en/getting-started/configuration.md",
-        "en/getting-started/activation.md"
+        "getting-started/installation.md",
+        "getting-started/configuration.md",
+        "getting-started/activation.md"
     ]},
     { "Extensions" = [
-        "en/extensions/polish.md",
-        "en/extensions/lithuanian.md"
+        "extensions/polish.md",
+        "extensions/lithuanian.md"
     ]},
-    { "FAQ" = "en/faq/index.md" },
-    { "Troubleshooting" = "en/troubleshooting/index.md" },
-    { "Support" = "en/support/index.md" }
-]
-
-# Alternate languages for language toggle
-[project.extra]
-alternate = [
-    { name = "English", link = "/en/", lang = "en" },
-    { name = "Polski", link = "/pl/", lang = "pl" }
+    { "FAQ" = "faq/index.md" },
+    { "Troubleshooting" = "troubleshooting/index.md" },
+    { "Support" = "support/index.md" }
 ]
 
 # Social links in footer
