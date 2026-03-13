@@ -46,9 +46,9 @@ extra_javascript = ["javascripts/home-animation.js"]
 nav = [
     { "Home" = "en/index.md" },
     { "Getting Started" = [
-        "en/getting-started/installation",
-        "en/getting-started/configuration",
-        "en/getting-started/activation"
+        "en/getting-started/installation.md",
+        "en/getting-started/configuration.md",
+        "en/getting-started/activation.md"
     ]},
     { "Extensions" = [
         "en/extensions/polish.md",
