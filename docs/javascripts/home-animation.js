@@ -1,158 +1,220 @@
 /**
- * OpenCart-themed Three.js particle animation
- * Colors: #04B6F0 (OpenCart Blue), #404040 (Gray)
- * Only runs on pages with #hero element
+ * Particle Animation for Homepage
+ * Simple canvas-based particle animation with OpenCart colors
  */
 
 (function() {
-  'use strict';
+    'use strict';
 
-  // Check if we're on a page with the hero element
-  function shouldRunAnimation() {
-    return document.getElementById('hero') !== null;
-  }
-
-  // Wait for DOM to be ready
-  function init() {
-    // Only run on pages with hero element
-    if (!shouldRunAnimation()) {
-      return;
+    // Theme detection - MkDocs Material uses data-md-color-scheme on body
+    function getTheme() {
+        const body = document.body;
+        const scheme = body.getAttribute('data-md-color-scheme');
+        return scheme === 'default' ? 'light' : 'dark';
     }
 
-    const canvas = document.querySelector('#attractor canvas');
-    if (!canvas) {
-      console.warn('Canvas not found, retrying...');
-      setTimeout(init, 500);
-      return;
+    // Background colors for each theme mode
+    const THEME_COLORS = {
+        dark: 'rgba(10, 10, 10, 0.2)',
+        light: 'rgba(248, 249, 250, 0.3)'
+    };
+
+    // Current theme cache
+    let currentTheme = 'dark';
+
+    // Configuration
+    const COLORS = ['#04B6F0', '#6958d5', '#53bc28'];
+    const PARTICLE_COUNT = 150;
+    const MOUSE_RADIUS = 100;
+
+    let canvas, ctx;
+    let particles = [];
+    let mouseX = 0, mouseY = 0;
+    let animationId;
+    let isInitialized = false;
+
+    // Check if current page is homepage
+    function isHomepage() {
+        const path = window.location.pathname;
+        const isHome = path.endsWith('/') ||
+               path.endsWith('/index.html') ||
+               path.endsWith('/index') ||
+               path === '/';
+        return isHome;
     }
 
-    // Load Three.js from CDN (UMD version for global access)
-    if (!window.THREE) {
-      const script = document.createElement('script');
-      // Use cdnjs for reliable CDN delivery
-      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
-      script.onload = () => {
-        window.THREE = window.THREE || THREE;
-        startAnimation(canvas);
-      };
-      script.onerror = () => {
-        console.error('Failed to load Three.js');
-      };
-      document.head.appendChild(script);
-    } else {
-      startAnimation(canvas);
+    // Initialize
+    function init() {
+        const container = document.getElementById('attractor');
+        if (!container) return;
+        if (!isHomepage()) return;
+        if (isInitialized) return;
+
+        // Mark body as homepage for CSS targeting
+        document.body.setAttribute('data-homepage', 'true');
+
+        // Get or create canvas
+        canvas = container.querySelector('canvas');
+        if (!canvas) {
+            canvas = document.createElement('canvas');
+            container.appendChild(canvas);
+        }
+
+        ctx = canvas.getContext('2d');
+        if (!ctx) {
+            console.error('Canvas 2d context not available');
+            return;
+        }
+
+        // Style the canvas
+        canvas.style.position = 'absolute';
+        canvas.style.top = '0';
+        canvas.style.left = '0';
+        canvas.style.width = '100%';
+        canvas.style.height = '100%';
+        canvas.style.zIndex = '0';
+
+        // Set size
+        resize();
+        window.addEventListener('resize', resize);
+
+        // Track mouse
+        document.addEventListener('mousemove', onMouseMove);
+
+        // Listen for theme changes
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.attributeName === 'data-md-color-scheme') {
+                    currentTheme = getTheme();
+                    console.log('Theme changed to:', currentTheme);
+                }
+            });
+        });
+        observer.observe(document.body, { attributes: true });
+
+        // Create particles
+        createParticles();
+
+        // Start animation
+        isInitialized = true;
+        animate();
+
+        console.log('Particle animation initialized');
     }
-  }
 
-  function startAnimation(canvas) {
-    const THREE = window.THREE;
+    function resize() {
+        const container = document.getElementById('attractor');
+        if (!container) return;
 
-    // Scene setup
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(
-      75,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    );
-
-    const renderer = new THREE.WebGLRenderer({
-      canvas: canvas,
-      alpha: true,
-      antialias: true
-    });
-
-    renderer.setSize(canvas.width, canvas.height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-    // OpenCart Blue particle system
-    const particlesGeometry = new THREE.BufferGeometry();
-    const particlesCount = 3000;
-    const posArray = new Float32Array(particlesCount * 3);
-
-    for (let i = 0; i < particlesCount * 3; i++) {
-      posArray[i] = (Math.random() - 0.5) * 15;
+        const rect = container.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
     }
 
-    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+    function createParticles() {
+        particles = [];
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 1.5,
+                vy: (Math.random() - 0.5) * 1.5,
+                radius: Math.random() * 3 + 2,
+                color: COLORS[Math.floor(Math.random() * COLORS.length)],
+                alpha: Math.random() * 0.5 + 0.3
+            });
+        }
+    }
 
-    // OpenCart blue material with glow effect
-    const particlesMaterial = new THREE.PointsMaterial({
-      size: 0.03,
-      color: 0x04B6F0,
-      transparent: true,
-      opacity: 0.8,
-      blending: THREE.AdditiveBlending
-    });
+    function onMouseMove(e) {
+        const container = document.getElementById('attractor');
+        if (!container) return;
 
-    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
-    scene.add(particlesMesh);
-
-    // Add connecting lines (network effect)
-    const lineGeometry = new THREE.BufferGeometry();
-    const lineMaterial = new THREE.LineBasicMaterial({
-      color: 0x04B6F0,
-      transparent: true,
-      opacity: 0.15
-    });
-    const linesMesh = new THREE.LineSegments(lineGeometry, lineMaterial);
-    scene.add(linesMesh);
-
-    camera.position.z = 4;
-
-    let mouseX = 0;
-    let mouseY = 0;
-
-    document.addEventListener('mousemove', (event) => {
-      mouseX = event.clientX / window.innerWidth - 0.5;
-      mouseY = event.clientY / window.innerHeight - 0.5;
-    });
-
-    // Handle touch events for mobile
-    document.addEventListener('touchmove', (event) => {
-      if (event.touches.length > 0) {
-        mouseX = event.touches[0].clientX / window.innerWidth - 0.5;
-        mouseY = event.touches[0].clientY / window.innerHeight - 0.5;
-      }
-    });
+        const rect = container.getBoundingClientRect();
+        mouseX = e.clientX - rect.left;
+        mouseY = e.clientY - rect.top;
+    }
 
     function animate() {
-      requestAnimationFrame(animate);
+        if (!isInitialized) return;
 
-      // Rotate based on mouse position
-      particlesMesh.rotation.y += 0.001 + mouseX * 0.002;
-      particlesMesh.rotation.x += 0.0005 + mouseY * 0.002;
+        animationId = requestAnimationFrame(animate);
 
-      linesMesh.rotation.y = particlesMesh.rotation.y;
-      linesMesh.rotation.x = particlesMesh.rotation.x;
+        // Clear canvas with theme-aware background color
+        const theme = getTheme();
+        ctx.fillStyle = THEME_COLORS[theme];
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      renderer.render(scene, camera);
+        // Update and draw particles
+        particles.forEach(function(p) {
+            // Mouse attraction
+            const dx = mouseX - p.x;
+            const dy = mouseY - p.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < MOUSE_RADIUS) {
+                const force = (MOUSE_RADIUS - dist) / MOUSE_RADIUS;
+                p.vx += dx * force * 0.01;
+                p.vy += dy * force * 0.01;
+            }
+
+            // Update position
+            p.x += p.vx;
+            p.y += p.vy;
+
+            // Boundary wrap
+            if (p.x < 0) p.x = canvas.width;
+            if (p.x > canvas.width) p.x = 0;
+            if (p.y < 0) p.y = canvas.height;
+            if (p.y > canvas.height) p.y = 0;
+
+            // Friction
+            p.vx *= 0.99;
+            p.vy *= 0.99;
+
+            // Add slight drift
+            p.vx += (Math.random() - 0.5) * 0.1;
+            p.vy += (Math.random() - 0.5) * 0.1;
+
+            // Draw particle
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = p.alpha;
+            ctx.fill();
+            ctx.globalAlpha = 1;
+        });
+
+        // Draw connections
+        particles.forEach(function(p1, i) {
+            particles.slice(i + 1).forEach(function(p2) {
+                const dx = p1.x - p2.x;
+                const dy = p1.y - p2.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < 100) {
+                    ctx.beginPath();
+                    ctx.moveTo(p1.x, p1.y);
+                    ctx.lineTo(p2.x, p2.y);
+                    ctx.strokeStyle = p1.color;
+                    ctx.globalAlpha = (1 - dist / 100) * 0.2;
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                    ctx.globalAlpha = 1;
+                }
+            });
+        });
     }
 
-    animate();
-
-    // Handle resize
-    function onResize() {
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
-      renderer.setSize(width, height);
+    // Start when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
     }
 
-    window.addEventListener('resize', onResize);
+    window.addEventListener('load', function() {
+        if (!isInitialized) init();
+    });
 
-    // Initial resize to match canvas
-    onResize();
-
-    console.log('OpenCart Three.js animation initialized');
-  }
-
-  // Initialize when DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
 })();

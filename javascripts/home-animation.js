@@ -1,44 +1,37 @@
 /**
- * Three.js Particle Animation for Homepage
- * Attractor effect with mouse interaction
- * Zensical.org style: bright particles on dark background
+ * Particle Animation for Homepage
+ * Simple canvas-based particle animation with OpenCart colors
  */
 
 (function() {
     'use strict';
 
-    // Configuration - bright particles for dark background
-    const CONFIG = {
-        particleCount: 2500,
-        particleColor: 0xffffff,  // White particles
-        particleSize: 3,          // Larger particles for visibility
-        mouseInfluenceRadius: 200,
-        mouseForce: 0.1,
-        returnForce: 0.015,
-        damping: 0.96,
-        threeJsVersion: 'r179'
+    // Theme detection - MkDocs Material uses data-md-color-scheme on body
+    function getTheme() {
+        const body = document.body;
+        const scheme = body.getAttribute('data-md-color-scheme');
+        return scheme === 'default' ? 'light' : 'dark';
+    }
+
+    // Background colors for each theme mode
+    const THEME_COLORS = {
+        dark: 'rgba(10, 10, 10, 0.2)',
+        light: 'rgba(248, 249, 250, 0.3)'
     };
 
-    // Three.js variables
-    let scene, camera, renderer, particles;
-    let mouse = { x: 0, y: 0, z: 0 };
-    let targetMouse = { x: 0, y: 0 };
-    let particlePositions, particleVelocities, originalPositions;
-    let animationId;
-    let isRunning = false;
-    let isInitialized = false;
+    // Current theme cache
+    let currentTheme = 'dark';
 
-    // Debug: global click handler to detect navigation clicks
-    document.addEventListener('click', function(e) {
-        var target = e.target.closest('a');
-        if (target) {
-            var href = target.getAttribute('href');
-            console.log('[DEBUG] Click on link:', href);
-            if (href && !href.startsWith('#') && !href.startsWith('http')) {
-                console.log('[DEBUG] Internal link clicked - checking if SPA navigation...');
-            }
-        }
-    }, true);
+    // Configuration
+    const COLORS = ['#04B6F0', '#6958d5', '#53bc28'];
+    const PARTICLE_COUNT = 150;
+    const MOUSE_RADIUS = 100;
+
+    let canvas, ctx;
+    let particles = [];
+    let mouseX = 0, mouseY = 0;
+    let animationId;
+    let isInitialized = false;
 
     // Check if current page is homepage
     function isHomepage() {
@@ -47,393 +40,181 @@
                path.endsWith('/index.html') ||
                path.endsWith('/index') ||
                path === '/';
-
-        // Also check for GitHub Pages paths
-        if (!isHome && path.includes('/opencart-community/')) {
-            const parts = path.split('/opencart-community/');
-            const after = parts[1];
-            return !after || after === '/' || after === 'index.html';
-        }
-
         return isHome;
     }
 
-    // Reset and restart animation with fresh particles
-    function restartAnimation() {
-        if (!isInitialized || !particles) {
-            // If not initialized yet, try to initialize
-            init();
-            return;
-        }
-
-        // Recreate particles with new random positions
-        createParticles();
-
-        // Reset mouse position
-        mouse.x = 0;
-        mouse.y = 0;
-        targetMouse.x = 0;
-        targetMouse.y = 0;
-
-        // Reset rotation
-        particles.rotation.y = 0;
-        particles.rotation.x = 0;
-
-        console.log('Animation restarted');
-    }
-
-    // Handle URL changes (SPA navigation)
-    function handleNavigation() {
-        console.log('[DEBUG] handleNavigation called, isHomepage:', isHomepage(), 'path:', window.location.pathname);
-        if (isHomepage()) {
-            // Small delay to let DOM update
-            setTimeout(function() {
-                console.log('[DEBUG] Restarting animation after timeout');
-                restartAnimation();
-            }, 150);
-        }
-    }
-
-    // Override pushState to detect SPA navigation
-    console.log('[DEBUG] Overriding history.pushState');
-    var originalPushState = history.pushState;
-    history.pushState = function() {
-        console.log('[DEBUG] history.pushState called');
-        originalPushState.apply(this, arguments);
-        handleNavigation();
-    };
-
-    // Override replaceState as well
-    var originalReplaceState = history.replaceState;
-    history.replaceState = function() {
-        console.log('[DEBUG] history.replaceState called');
-        originalReplaceState.apply(this, arguments);
-        handleNavigation();
-    };
-
-    // Handle back/forward buttons
-    window.addEventListener('popstate', function() {
-        console.log('[DEBUG] popstate event fired');
-        handleNavigation();
-    });
-
-    // MkDocs Material navigation events (Zensical/RxJS)
-    // These observables detect navigation via Zensical tabs/links
-    // Poll for them as they may not be available immediately on script load
-    console.log('[DEBUG] Starting RxJS polling for document$ and location$');
-
-    var documentSubscribed = false;
-    var locationSubscribed = false;
-    var rxJsPollCount = 0;
-    var rxJsPollInterval = setInterval(function() {
-        rxJsPollCount++;
-
-        // Debug: log what's available
-        if (rxJsPollCount === 1) {
-            console.log('[DEBUG] Checking for RxJS observables...');
-            console.log('[DEBUG] document$ exists:', typeof document$ !== 'undefined');
-            console.log('[DEBUG] location$ exists:', typeof location$ !== 'undefined');
-            console.log('[DEBUG] window.rxjs exists:', typeof window.rxjs !== 'undefined');
-        }
-
-        // Try to subscribe to document$
-        if (!documentSubscribed && typeof document$ !== 'undefined') {
-            console.log('[DEBUG] Subscribing to document$');
-            document$.subscribe(function() {
-                console.log('[DEBUG] document$ fired');
-                handleNavigation();
-            });
-            documentSubscribed = true;
-        }
-
-        // Try to subscribe to location$
-        if (!locationSubscribed && typeof location$ !== 'undefined') {
-            console.log('[DEBUG] Subscribing to location$');
-            location$.subscribe(function(path) {
-                console.log('[DEBUG] location$ fired with path:', path);
-                handleNavigation();
-            });
-            locationSubscribed = true;
-        }
-
-        // Stop polling after 5 seconds (50 * 100ms)
-        if (rxJsPollCount >= 50) {
-            console.log('[DEBUG] RxJS polling stopped, document$:', documentSubscribed, 'location$:', locationSubscribed);
-            clearInterval(rxJsPollInterval);
-        }
-    }, 100);
-
-    // Also use MutationObserver to detect DOM changes (for SPA navigation)
-    var observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-            if (mutation.addedNodes.length > 0) {
-                for (var i = 0; i < mutation.addedNodes.length; i++) {
-                    var node = mutation.addedNodes[i];
-                    if (node.id === 'attractor' || (node.querySelector && node.querySelector('#attractor'))) {
-                        handleNavigation();
-                        break;
-                    }
-                }
-            }
-        });
-    });
-
-    // Start observing when DOM is ready
-    function initObserver() {
-        if (document.body) {
-            observer.observe(document.body, { childList: true, subtree: true });
-        } else {
-            document.addEventListener('DOMContentLoaded', function() {
-                observer.observe(document.body, { childList: true, subtree: true });
-            });
-        }
-    }
-
-    // Initialize - load Three.js first if needed
+    // Initialize
     function init() {
-        var container = document.getElementById('attractor');
-        if (!container) {
-            return;
-        }
-
-        var canvas = container.querySelector('canvas');
-        if (!canvas) {
-            return;
-        }
-
-        // Only run on homepage
-        if (!isHomepage()) {
-            return;
-        }
-
-        // Check if already initialized
-        if (isInitialized) {
-            restartAnimation();
-            return;
-        }
-
-        // Check if Three.js is already loaded
-        if (typeof THREE !== 'undefined') {
-            startAnimation(canvas);
-            return;
-        }
-
-        // Load Three.js dynamically
-        loadThreeJs().then(function() {
-            startAnimation(canvas);
-        }).catch(function(err) {
-            console.error('Failed to load Three.js:', err);
-        });
-    }
-
-    function loadThreeJs() {
-        return new Promise(function(resolve, reject) {
-            // Check again in case it loaded between check and now
-            if (typeof THREE !== 'undefined') {
-                resolve();
-                return;
-            }
-
-            var script = document.createElement('script');
-            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/' + CONFIG.threeJsVersion + '/three.min.js';
-            script.onload = resolve;
-            script.onerror = reject;
-            document.head.appendChild(script);
-        });
-    }
-
-    function startAnimation(canvas) {
+        const container = document.getElementById('attractor');
+        if (!container) return;
+        if (!isHomepage()) return;
         if (isInitialized) return;
-        isInitialized = true;
-        isRunning = true;
 
-        // Get dimensions
-        var width = window.innerWidth;
-        var height = window.innerHeight;
+        // Mark body as homepage for CSS targeting
+        document.body.setAttribute('data-homepage', 'true');
 
-        // Set canvas size
-        canvas.width = width * window.devicePixelRatio;
-        canvas.height = height * window.devicePixelRatio;
-        canvas.style.width = width + 'px';
-        canvas.style.height = height + 'px';
+        // Get or create canvas
+        canvas = container.querySelector('canvas');
+        if (!canvas) {
+            canvas = document.createElement('canvas');
+            container.appendChild(canvas);
+        }
 
-        // Create Three.js scene
-        scene = new THREE.Scene();
+        ctx = canvas.getContext('2d');
+        if (!ctx) {
+            console.error('Canvas 2d context not available');
+            return;
+        }
 
-        // Create camera
-        camera = new THREE.PerspectiveCamera(75, width / height, 1, 3000);
-        camera.position.z = 1000;
+        // Style the canvas
+        canvas.style.position = 'absolute';
+        canvas.style.top = '0';
+        canvas.style.left = '0';
+        canvas.style.width = '100%';
+        canvas.style.height = '100%';
+        canvas.style.zIndex = '0';
 
-        // Create renderer with transparent background
-        renderer = new THREE.WebGLRenderer({
-            canvas: canvas,
-            antialias: true,
-            alpha: true
+        // Set size
+        resize();
+        window.addEventListener('resize', resize);
+
+        // Track mouse
+        document.addEventListener('mousemove', onMouseMove);
+
+        // Listen for theme changes
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.attributeName === 'data-md-color-scheme') {
+                    currentTheme = getTheme();
+                    console.log('Theme changed to:', currentTheme);
+                }
+            });
         });
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.setSize(width, height);
-        renderer.setClearColor(0x000000, 0);  // Transparent background
+        observer.observe(document.body, { attributes: true });
 
         // Create particles
         createParticles();
 
-        // Event listeners
-        document.addEventListener('mousemove', onMouseMove);
-        window.addEventListener('resize', onWindowResize);
-
         // Start animation
+        isInitialized = true;
         animate();
 
-        console.log('Three.js animation started');
+        console.log('Particle animation initialized');
     }
 
-    // Initialize on DOM ready
-    document.addEventListener('DOMContentLoaded', function() {
-        init();
-        initObserver();
-    });
+    function resize() {
+        const container = document.getElementById('attractor');
+        if (!container) return;
 
-    // Also try on load in case DOMContentLoaded already fired
-    window.addEventListener('load', function() {
-        if (!isRunning) {
-            init();
-        }
-        initObserver();
-    });
+        const rect = container.getBoundingClientRect();
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+    }
 
     function createParticles() {
-        var geometry = new THREE.BufferGeometry();
-        particlePositions = new Float32Array(CONFIG.particleCount * 3);
-        particleVelocities = new Float32Array(CONFIG.particleCount * 3);
-        originalPositions = new Float32Array(CONFIG.particleCount * 3);
-
-        // Initialize particle positions
-        for (var i = 0; i < CONFIG.particleCount; i++) {
-            var i3 = i * 3;
-
-            // Spread particles in 3D space
-            particlePositions[i3] = (Math.random() - 0.5) * 2000;
-            particlePositions[i3 + 1] = (Math.random() - 0.5) * 2000;
-            particlePositions[i3 + 2] = (Math.random() - 0.5) * 2000;
-
-            // Store original positions for return force
-            originalPositions[i3] = particlePositions[i3];
-            originalPositions[i3 + 1] = particlePositions[i3 + 1];
-            originalPositions[i3 + 2] = particlePositions[i3 + 2];
-
-            // Initial velocities
-            particleVelocities[i3] = 0;
-            particleVelocities[i3 + 1] = 0;
-            particleVelocities[i3 + 2] = 0;
+        particles = [];
+        for (let i = 0; i < PARTICLE_COUNT; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 1.5,
+                vy: (Math.random() - 0.5) * 1.5,
+                radius: Math.random() * 3 + 2,
+                color: COLORS[Math.floor(Math.random() * COLORS.length)],
+                alpha: Math.random() * 0.5 + 0.3
+            });
         }
-
-        geometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
-
-        // Remove old particles if they exist
-        if (particles) {
-            scene.remove(particles);
-            particles.geometry.dispose();
-            particles.material.dispose();
-        }
-
-        // Create material - bright white with glow effect
-        var material = new THREE.PointsMaterial({
-            color: CONFIG.particleColor,
-            size: CONFIG.particleSize,
-            transparent: true,
-            opacity: 0.9,
-            sizeAttenuation: true
-        });
-
-        particles = new THREE.Points(geometry, material);
-        scene.add(particles);
     }
 
-    function onMouseMove(event) {
-        // Convert mouse position to normalized coordinates
-        targetMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-        targetMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    }
+    function onMouseMove(e) {
+        const container = document.getElementById('attractor');
+        if (!container) return;
 
-    function onWindowResize() {
-        var width = window.innerWidth;
-        var height = window.innerHeight;
-
-        camera.aspect = width / height;
-        camera.updateProjectionMatrix();
-
-        renderer.setSize(width, height);
-
-        var canvas = renderer.domElement;
-        canvas.width = width * window.devicePixelRatio;
-        canvas.height = height * window.devicePixelRatio;
+        const rect = container.getBoundingClientRect();
+        mouseX = e.clientX - rect.left;
+        mouseY = e.clientY - rect.top;
     }
 
     function animate() {
+        if (!isInitialized) return;
+
         animationId = requestAnimationFrame(animate);
 
-        // Smooth mouse following
-        mouse.x += (targetMouse.x - mouse.x) * 0.1;
-        mouse.y += (targetMouse.y - mouse.y) * 0.1;
+        // Clear canvas with theme-aware background color
+        const theme = getTheme();
+        ctx.fillStyle = THEME_COLORS[theme];
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Update particle positions
-        updateParticles();
+        // Update and draw particles
+        particles.forEach(function(p) {
+            // Mouse attraction
+            const dx = mouseX - p.x;
+            const dy = mouseY - p.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
 
-        // Rotate scene slightly for depth
-        particles.rotation.y += 0.0008;
-        particles.rotation.x += 0.0004;
-
-        renderer.render(scene, camera);
-    }
-
-    function updateParticles() {
-        var positions = particles.geometry.attributes.position.array;
-
-        for (var i = 0; i < CONFIG.particleCount; i++) {
-            var i3 = i * 3;
-
-            // Get current position
-            var px = positions[i3];
-            var py = positions[i3 + 1];
-            var pz = positions[i3 + 2];
-
-            // Calculate distance to mouse (in 3D space)
-            var mx = mouse.x * 600;
-            var my = mouse.y * 600;
-            var mz = 0;
-
-            var dx = mx - px;
-            var dy = my - py;
-            var dz = mz - pz;
-
-            var distSq = dx * dx + dy * dy + dz * dz;
-            var dist = Math.sqrt(distSq);
-
-            // Apply mouse attraction force
-            if (dist < CONFIG.mouseInfluenceRadius && dist > 0) {
-                var force = (1 - dist / CONFIG.mouseInfluenceRadius) * CONFIG.mouseForce;
-
-                particleVelocities[i3] += dx * force;
-                particleVelocities[i3 + 1] += dy * force;
-                particleVelocities[i3 + 2] += dz * force;
+            if (dist < MOUSE_RADIUS) {
+                const force = (MOUSE_RADIUS - dist) / MOUSE_RADIUS;
+                p.vx += dx * force * 0.01;
+                p.vy += dy * force * 0.01;
             }
 
-            // Apply return force (pull back to original position)
-            particleVelocities[i3] += (originalPositions[i3] - px) * CONFIG.returnForce;
-            particleVelocities[i3 + 1] += (originalPositions[i3 + 1] - py) * CONFIG.returnForce;
-            particleVelocities[i3 + 2] += (originalPositions[i3 + 2] - pz) * CONFIG.returnForce;
+            // Update position
+            p.x += p.vx;
+            p.y += p.vy;
 
-            // Apply damping
-            particleVelocities[i3] *= CONFIG.damping;
-            particleVelocities[i3 + 1] *= CONFIG.damping;
-            particleVelocities[i3 + 2] *= CONFIG.damping;
+            // Boundary wrap
+            if (p.x < 0) p.x = canvas.width;
+            if (p.x > canvas.width) p.x = 0;
+            if (p.y < 0) p.y = canvas.height;
+            if (p.y > canvas.height) p.y = 0;
 
-            // Update positions
-            positions[i3] += particleVelocities[i3];
-            positions[i3 + 1] += particleVelocities[i3 + 1];
-            positions[i3 + 2] += particleVelocities[i3 + 2];
-        }
+            // Friction
+            p.vx *= 0.99;
+            p.vy *= 0.99;
 
-        particles.geometry.attributes.position.needsUpdate = true;
+            // Add slight drift
+            p.vx += (Math.random() - 0.5) * 0.1;
+            p.vy += (Math.random() - 0.5) * 0.1;
+
+            // Draw particle
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = p.alpha;
+            ctx.fill();
+            ctx.globalAlpha = 1;
+        });
+
+        // Draw connections
+        particles.forEach(function(p1, i) {
+            particles.slice(i + 1).forEach(function(p2) {
+                const dx = p1.x - p2.x;
+                const dy = p1.y - p2.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < 100) {
+                    ctx.beginPath();
+                    ctx.moveTo(p1.x, p1.y);
+                    ctx.lineTo(p2.x, p2.y);
+                    ctx.strokeStyle = p1.color;
+                    ctx.globalAlpha = (1 - dist / 100) * 0.2;
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                    ctx.globalAlpha = 1;
+                }
+            });
+        });
     }
+
+    // Start when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+
+    window.addEventListener('load', function() {
+        if (!isInitialized) init();
+    });
+
 })();

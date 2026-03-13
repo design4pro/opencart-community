@@ -42,28 +42,29 @@ dev_addr = "localhost:8000"
 extra_css = ["stylesheets/extra.css"]
 extra_javascript = ["javascripts/home-animation.js"]
 
-# Navigation structure
+# Navigation structure - English (default)
 nav = [
-    { "Home" = "index.md" },
+    { "Home" = "en/index.md" },
     { "Getting Started" = [
-        "getting-started/installation",
-        "getting-started/configuration",
-        "getting-started/activation"
+        "en/getting-started/installation",
+        "en/getting-started/configuration",
+        "en/getting-started/activation"
     ]},
     { "Extensions" = [
-        "extensions/polish.md",
-        "extensions/lithuanian.md"
+        "en/extensions/polish.md",
+        "en/extensions/lithuanian.md"
     ]},
-    { "FAQ" = "faq/index.md" },
-    { "Troubleshooting" = "troubleshooting/index.md" },
-    { "Support" = "support/index.md" }
+    { "FAQ" = "en/faq/index.md" },
+    { "Troubleshooting" = "en/troubleshooting/index.md" },
+    { "Support" = "en/support/index.md" }
 ]
 
-# Repository for "Edit this page" links
-[project.repository]
-url = "https://github.com/design4pro/opencart-community"
-branch = "main"
-edit_uri = "edit/main/docs/"
+# Alternate languages for language toggle
+[project.extra]
+alternate = [
+    { name = "English", link = "/en/", lang = "en" },
+    { name = "Polski", link = "/pl/", lang = "pl" }
+]
 
 # Social links in footer
 [[project.extra.social]]
@@ -73,6 +74,12 @@ link = "https://github.com/design4pro/opencart-community"
 [[project.extra.social]]
 icon = "fontawesome/brands/opencart"
 link = "https://www.opencart.com/index.php?route=marketplace/extension/info&extension_id="
+
+# Repository for "Edit this page" links
+[project.repository]
+url = "https://github.com/design4pro/opencart-community"
+branch = "main"
+edit_uri = "edit/main/docs/"
 
 # ============================================================================
 # Theme Options

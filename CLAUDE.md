@@ -8,25 +8,37 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Zensical-powered documentation site for OpenCart language packages, maintained by DESIGN4PRO. The site provides documentation for installing, building, and translating OpenCart language packs.
+This is a Zensical-powered documentation site for OpenCart language packages, maintained by DESIGN4PRO. The site provides documentation for installing, building, and translating OpenCart language packs in English and Polish.
 
-## Documentation Structure
+## Documentation Structure (Multilingual)
 
 ```
 docs/
-├── docs.json              # Mintlify configuration
-├── index.mdx              # Main landing page (English)
-├── overview.mdx           # Overview page
-├── languages/             # Language overview pages
-│   └── polish.mdx         # Polish language documentation
-├── getting-started/       # English getting started guides
-│   ├── installation.mdx
-│   ├── purchase.mdx
-│   └── support.mdx
-├── development/           # Development guides
-│   ├── building.mdx
-│   └── translating.mdx
-└── CLAUDE.md
+├── en/                      # English (default)
+│   ├── index.md            # Homepage
+│   ├── getting-started/
+│   │   ├── installation.md
+│   │   ├── configuration.md
+│   │   └── activation.md
+│   ├── extensions/
+│   │   ├── polish.md
+│   │   └── lithuanian.md
+│   ├── faq.md
+│   ├── troubleshooting.md
+│   └── support.md
+│
+└── pl/                      # Polish
+    ├── index.md            # Homepage (Polish)
+    ├── getting-started/
+    │   ├── installation.md
+    │   ├── configuration.md
+    │   └── activation.md
+    ├── extensions/
+    │   ├── polish.md
+    │   └── lithuanian.md
+    ├── faq.md
+    ├── troubleshooting.md
+    └── support.md
 ```
 
 ## Commands
@@ -34,54 +46,64 @@ docs/
 ### Local Development
 
 ```bash
-# Start local development server (Mintlify)
-npx mintlify dev
+# Start local development server (Zensical)
+zensical serve
+
+# Open in browser
+zensical serve --open
 ```
 
 ### Build & Deploy
 
 ```bash
 # Build documentation for production
-npx mintlify build
+zensical build
+
+# Build with clean cache
+zensical build --clean
 
 # Start production server
-npx mintlify start
-
-# Deploy to Mintlify
-npx mintlify deploy
-```
-
-### Validation
-
-```bash
-# Check for broken links
-npx mintlify broken-links
-
-# Validate configuration
-npx mintlify validate
+zensical serve
 ```
 
 ## Configuration
 
-The site uses the "maple" theme with primary color `#0096e6`. Navigation is configured in `docs.json` using the **tabs** pattern (recommended by Mintlify): Getting Started, Languages, and Development.
+The site is configured in `zensical.toml`:
+- Uses "modern" theme variant with OpenCart Blue (`#04B6F0`)
+- Navigation configured with tabs pattern: Getting Started, Extensions, FAQ, Troubleshooting, Support
+- Language toggle configured for English/Polish switching
+- Custom homepage with Three.js particle animation
 
 ## OpenCart Version
 
-**Only OpenCart 4.1.x is supported.** The source files are located in `../opencart/src/v4.1/`.
+**Only OpenCart 4.1.x is supported.**
 
 ## Extension Structure
 
-The extension `oc_language_pl` (Polish Language Pack) is the only extension in this project. Located at:
-- `../opencart/src/v4.1/extension/oc_language_pl/`
+The extension `oc_language_pl` (Polish Language Pack) is maintained at:
+- Private repository: `../opencart/src/v4.1/extension/oc_language_pl/`
 
-Key files:
-- `install.json` - Extension metadata (version 4.1.x only)
-- `admin/` - Admin panel language files
-- `catalog/` - Catalog (storefront) language files
+## Custom Features
 
-## Multi-Language Support
+### Three.js Homepage Animation
+- Located in `docs/javascripts/home-animation.js`
+- Particle system with OpenCart Blue colors
+- Mouse interaction for particle attraction
+- Custom CSS in `docs/stylesheets/extra.css`
 
-The documentation supports English (default) and Polish (`/pl/`). When adding new pages:
-1. Create the English version in the root directory
-2. Create the Polish translation in `pl/` directory
-3. Add both to `docs.json` navigation
+### Homepage Template Override
+- Located in `overrides/homepage.html`
+- Full-width hero section with animation container
+
+## Adding New Content
+
+When adding new documentation pages:
+1. Create the English version in `docs/en/`
+2. Create the Polish translation in `docs/pl/`
+3. Add both pages to `zensical.toml` navigation
+4. Use relative links within the same language (e.g., `../getting-started/installation/`)
+
+## GitHub Discussions
+
+Support and community discussions are hosted at:
+https://github.com/design4pro/opencart-community/discussions
