@@ -2,9 +2,13 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Language Preference
+
+**All generated documents, code, and comments must be in English**, unless explicitly requested otherwise by the user.
+
 ## Project Overview
 
-This is a Mintlify-powered documentation site for OpenCart language packages, maintained by DESIGN4PRO. The site provides documentation for installing, building, and translating OpenCart language packs.
+This is a Zensical-powered documentation site for OpenCart language packages, maintained by DESIGN4PRO. The site provides documentation for installing, building, and translating OpenCart language packs.
 
 ## Documentation Structure
 

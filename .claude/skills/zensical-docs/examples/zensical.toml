@@ -1,0 +1,158 @@
+# Example: Complete zensical.toml Configuration
+
+This file shows a complete Zensical configuration with all commonly used options.
+
+```toml
+# ===========================================
+# Project Settings
+# ===========================================
+
+[project]
+# Required: Site name (appears in header and HTML title)
+site_name = "OpenCart Community Documentation"
+
+# Canonical URL for site
+ thesite_url = "https://design4pro.github.io/opencart-community/"
+
+# Description for SEO and meta tags
+site_description = "Documentation for OpenCart language packages, translations, and extensions by DESIGN4PRO"
+
+# Author name (appears in meta tags)
+site_author = "DESIGN4PRO"
+
+# Copyright notice for footer
+copyright = "Copyright © 2024 DESIGN4PRO. All rights reserved."
+
+# Directory settings
+docs_dir = "docs"        # Source markdown files
+site_dir = "site"        # Built output (gitignored)
+
+# URL format: true = /page/, false = /page.html
+use_directory_urls = true
+
+# Development server address
+dev_addr = "localhost:8000"
+
+# ===========================================
+# Theme Settings
+# ===========================================
+
+[project.theme]
+# Theme variant: "modern" (default) or "classic" (Material MkDocs look)
+variant = "modern"
+
+# Custom colors (modern theme)
+# primary_color = "#0096e6"
+# accent_color = "#00bcd4"
+
+# ===========================================
+# Navigation
+# ===========================================
+
+[project.navigation]
+pages = [
+    "index",
+    "getting-started/installation",
+    "getting-started/configuration",
+    { "languages" = "Languages", "children" = [
+        "languages/polish",
+        "languages/english"
+    ]},
+    { "development" = "Development", "children" = [
+        "development/building",
+        "development/translating"
+    ]},
+    "support"
+]
+
+# ===========================================
+# Markdown Extensions
+# ===========================================
+
+[project.markdown_extensions]
+
+# Admonitions (callouts)
+admonition = {}
+
+# Code highlighting
+pymdownx.highlight = { anchor_linenums = true }
+pymdownx.inlinehilite = {}
+pymdownx.snippets = {}
+
+# Collapsible blocks
+pymdownx.details = {}
+
+# Code fences
+pymdownx.superfences = {}
+
+# Tabs
+pymdownx.tabbed = { alternate_style = true }
+
+# ===========================================
+# Search
+# ===========================================
+
+[project.search]
+highlight = true  # Highlight search terms
+# searchable = ["*"]  # What to search (default: all)
+
+# ===========================================
+# GitHub Integration
+# ===========================================
+
+[project.github]
+fork = true    # Show fork button
+# repo_url = "https://github.com/user/repo"
+
+# ===========================================
+# Extra Variables
+# ===========================================
+
+[project.extra]
+# Custom variables accessible in templates
+# github_repo = "design4pro/opencart-community"
+# twitter = "@design4pro"
+
+# ===========================================
+# Plugins (if needed)
+# ===========================================
+
+# [project.plugins]
+# search = {}
+# minify = {}
+```
+
+## Minimal Configuration
+
+For simple projects:
+
+```toml
+[project]
+site_name = "My Docs"
+site_url = "https://example.com/"
+docs_dir = "docs"
+```
+
+## Environment-Specific Config
+
+Create separate configs:
+
+**zensical.toml** (main):
+```toml
+[project]
+site_name = "My Docs"
+site_url = "https://example.com/"
+dev_addr = "localhost:8000"
+```
+
+**zensical.prod.toml** (production):
+```toml
+[project]
+site_name = "My Docs"
+site_url = "https://example.com/"
+```
+
+Build with:
+```bash
+zensical build --config-file zensical.prod.toml
+```

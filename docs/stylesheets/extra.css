@@ -1,0 +1,159 @@
+/* OpenCart-themed custom styles for Zensical documentation */
+
+:root > * {
+  /* OpenCart Blue primary colors */
+  --md-primary-fg-color: #04B6F0;
+  --md-primary-fg-color--light: #6BC8F7;
+  --md-primary-fg-color--dark: #038AC4;
+
+  /* Accent colors */
+  --md-accent-fg-color: #04B6F0;
+  --md-accent-fg-color--light: #6BC8F7;
+  --md-accent-fg-color--dark: #038AC4;
+
+  /* Link colors */
+  --md-typeset-a-color: #04B6F0;
+
+  /* Secondary color (gray) */
+  --md-secondary-fg-color: #404040;
+}
+
+/* Dark mode */
+[data-theme="dark"] {
+  --md-primary-fg-color: #04B6F0;
+  --md-primary-fg-color--light: #6BC8F7;
+  --md-primary-fg-color--dark: #038AC4;
+
+  --md-accent-fg-color: #04B6F0;
+  --md-accent-fg-color--light: #6BC8F7;
+  --md-accent-fg-color--dark: #038AC4;
+
+  --md-typeset-a-color: #04B6F0;
+}
+
+/* Hero section styling */
+.mdx-hero {
+  background: linear-gradient(135deg, #04B6F0 0%, #038AC4 100%);
+  color: white;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.mdx-hero h1 {
+  color: white;
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.mdx-hero p {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+/* Hero buttons */
+.mdx-hero .md-button {
+  margin: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.mdx-hero .md-button--primary {
+  background: #ffffff;
+  color: #04B6F0;
+}
+
+.mdx-hero .md-button--primary:hover {
+  background: #f0f0f0;
+  transform: translateY(-2px);
+}
+
+.mdx-hero .md-button:not(.md-button--primary) {
+  background: transparent;
+  border: 2px solid #ffffff;
+  color: #ffffff;
+}
+
+.mdx-hero .md-button:not(.md-button--primary):hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Parameters display styling */
+.mdx-parameters code {
+  background: rgba(4, 182, 240, 0.2);
+  color: #04B6F0;
+}
+
+/* Attractor canvas container */
+#attractor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+#attractor canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Hero content overlay */
+.mdx-hero .md-grid {
+  position: relative;
+  z-index: 1;
+}
+
+/* Teaser section */
+.mdx-teaser {
+  padding: 3rem 2rem;
+  text-align: center;
+  background: var(--md-typeset-background);
+}
+
+.mdx-teaser h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: var(--md-primary-fg-color);
+}
+
+.mdx-teaser p {
+  font-size: 1.1rem;
+  color: var(--md-typeset-color);
+  margin-bottom: 2rem;
+}
+
+/* Position display */
+.mdx-position {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  font-family: monospace;
+}
+
+.mdx-position code {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.8rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .mdx-hero h1 {
+    font-size: 2rem;
+  }
+
+  .mdx-hero p {
+    font-size: 1rem;
+  }
+
+  .mdx-hero .md-button {
+    display: block;
+    margin: 0.5rem auto;
+    width: 100%;
+    max-width: 200px;
+  }
+}

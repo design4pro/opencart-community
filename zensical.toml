@@ -1,0 +1,123 @@
+# ============================================================================
+#
+# Zensical configuration for DESIGN4PRO OpenCart Language Packs Documentation
+#
+# ============================================================================
+
+[project]
+
+# Site name shown in header and browser title
+site_name = "DESIGN4ᴾᴿᴼ OpenCart"
+
+# Site description for SEO
+site_description = "Official documentation for OpenCart language packs by DESIGN4ᴾᴿᴼ. Install, configure, and translate your OpenCart store."
+
+# Site author
+site_author = "DESIGN4ᴾᴿᴼ"
+
+# Canonical URL
+site_url = "https://design4pro.github.io/opencart-community/"
+
+# Copyright notice
+copyright = """
+Copyright &copy; 2026 DESIGN4ᴾᴿᴼ. All rights reserved.
+"""
+
+# Default language
+language = "en"
+
+# Documentation directory
+docs_dir = "docs"
+
+# Output directory
+site_dir = "site"
+
+# Use directory URLs (clean URLs without .html)
+use_directory_urls = true
+
+# Development server address
+dev_addr = "localhost:8000"
+
+# Custom CSS and JavaScript
+extra_css = ["stylesheets/extra.css"]
+extra_javascript = ["javascripts/home-animation.js"]
+
+# Navigation structure
+nav = [
+    { "Home" = "index.md" },
+    { "Getting Started" = [
+        "getting-started/installation",
+        "getting-started/configuration",
+        "getting-started/activation"
+    ]},
+    { "Extensions" = [
+        "extensions/polish.md",
+        "extensions/lithuanian.md"
+    ]},
+    { "FAQ" = "faq/index.md" },
+    { "Troubleshooting" = "troubleshooting/index.md" },
+    { "Support" = "support/index.md" }
+]
+
+# Repository for "Edit this page" links
+[project.repository]
+url = "https://github.com/design4pro/opencart-community"
+branch = "main"
+edit_uri = "edit/main/docs/"
+
+# Social links in footer
+[[project.extra.social]]
+icon = "fontawesome/brands/github"
+link = "https://github.com/design4pro/opencart-community"
+
+[[project.extra.social]]
+icon = "fontawesome/brands/opencart"
+link = "https://www.opencart.com/index.php?route=marketplace/extension/info&extension_id="
+
+# ============================================================================
+# Theme Options
+# ============================================================================
+[project.theme]
+
+# Variant: "modern" or "classic" (Material MkDocs look)
+variant = "modern"
+
+# Custom templates directory (overrides theme templates)
+custom_dir = "overrides"
+
+# Feature toggles
+features = [
+    "announce.dismiss",
+    "content.code.annotate",
+    "content.code.copy",
+    "content.code.select",
+    "content.footnote.tooltips",
+    "content.tabs.link",
+    "content.tooltips",
+    "navigation.footer",
+    "navigation.indexes",
+    "navigation.instant",
+    "navigation.instant.prefetch",
+    "navigation.path",
+    "navigation.tabs",
+    "navigation.tabs.sticky",
+    "navigation.sections",
+    "navigation.tracking",
+    "search.highlight",
+]
+
+# Color palettes (light/dark mode)
+[[project.theme.palette]]
+scheme = "default"
+primary = "blue"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+scheme = "slate"
+primary = "blue"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to light mode"
+
+# Primary color - OpenCart Blue
+primary_color = "#04B6F0"

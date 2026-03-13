@@ -1,0 +1,239 @@
+/**
+ * Custom styles for homepage hero section
+ * Zensical.org style: dark background with bright particles
+ */
+
+/* Homepage hero section - fullscreen dark background */
+.home-container {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    background: #0a0a0a;
+    overflow: hidden;
+}
+
+/* Three.js canvas container */
+#attractor {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+#attractor canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* Hero content - left aligned like zensical.org */
+.hero-content {
+    position: relative;
+    z-index: 10;
+    padding: 4rem;
+    max-width: 600px;
+    animation: fadeInUp 1s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Headline styling */
+.hero-content h1 {
+    color: #ffffff !important;
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Description text */
+.hero-content p {
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-size: 1.35rem;
+    margin-bottom: 2.5rem;
+    max-width: 480px;
+    line-height: 1.6;
+}
+
+/* CTA buttons container */
+.cta-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+/* Primary CTA button */
+.cta-primary {
+    display: inline-block;
+    padding: 1rem 2.5rem;
+    background: #04B6F0;
+    color: #ffffff !important;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(4, 182, 240, 0.3);
+}
+
+.cta-primary:hover {
+    background: #0396d6;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(4, 182, 240, 0.4);
+}
+
+/* Secondary CTA button */
+.cta-secondary {
+    display: inline-block;
+    padding: 1rem 2.5rem;
+    background: transparent;
+    color: #ffffff !important;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.cta-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+/* Teaser section */
+.mdx-teaser {
+    background: #0a0a0a;
+    padding: 5rem 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mdx-teaser .md-grid {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.mdx-teaser h2 {
+    color: #ffffff;
+    font-size: 2.25rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.mdx-teaser > .md-typeset > p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.1rem;
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto 3rem;
+}
+
+/* Features grid */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+/* Feature cards */
+.feature-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 2rem;
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(4, 182, 240, 0.3);
+    transform: translateY(-4px);
+}
+
+.feature-card h3 {
+    color: #04B6F0;
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+}
+
+.feature-card p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero-content {
+        padding: 2rem;
+        padding-top: 6rem;
+    }
+
+    .hero-content h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero-content p {
+        font-size: 1.1rem;
+    }
+
+    .cta-buttons {
+        flex-direction: column;
+    }
+
+    .cta-primary,
+    .cta-secondary {
+        width: 100%;
+        text-align: center;
+    }
+
+    .mdx-teaser {
+        padding: 3rem 1.5rem;
+    }
+
+    .mdx-teaser h2 {
+        font-size: 1.75rem;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-content {
+        padding: 1.5rem;
+        padding-top: 5rem;
+    }
+
+    .hero-content h1 {
+        font-size: 2rem;
+    }
+
+    .hero-content p {
+        font-size: 1rem;
+    }
+
+    .cta-primary,
+    .cta-secondary {
+        padding: 0.875rem 1.5rem;
+    }
+}

@@ -3,5 +3,13 @@
 .claude/*
 !.claude/scripts/
 !.claude/skills/
+.mcp.json
 .DS_Store
-docs/
+.venv
+.python-version
+main.py
+pyproject.toml
+uv.lock
+.cache/
+site/
+.playwright-mcp
