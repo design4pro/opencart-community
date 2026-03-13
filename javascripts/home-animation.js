@@ -33,13 +33,15 @@
     let animationId;
     let isInitialized = false;
 
-    // Check if current page is homepage
+    // Check if current page is homepage (including language variants)
     function isHomepage() {
         const path = window.location.pathname;
         const isHome = path.endsWith('/') ||
                path.endsWith('/index.html') ||
                path.endsWith('/index') ||
-               path === '/';
+               path === '/' ||
+               path === '/en/' ||
+               path === '/pl/';
         return isHome;
     }
 
@@ -217,4 +219,68 @@
         if (!isInitialized) init();
     });
 
+})();
+
+/**
+ * Navigation translation - translates labels and fixes links for Polish language
+ */
+(function() {
+    'use strict';
+
+    // Check if this is a Polish page
+    const path = window.location.pathname;
+    const isPolish = path.includes('/pl/') || path.startsWith('/pl');
+    if (!isPolish) return;
+
+    // Prevent multiple runs
+    if (window.__navTranslated) return;
+    window.__navTranslated = true;
+
+    const translations = {
+        'Getting Started': 'Pierwsze kroki',
+        'Extensions': 'Rozszerzenia',
+        'Troubleshooting': 'Rozwiązywanie problemów',
+        'Support': 'Pomoc',
+        'Home': 'Strona główna'
+    };
+
+    function translateNavigation() {
+        // Translate sidebar and tabs navigation links
+        const navLinks = document.querySelectorAll('.md-nav__link, .md-tabs__link');
+        navLinks.forEach(function(link) {
+            // Fix href - change /en/ to /pl/
+            const href = link.getAttribute('href');
+            if (href && href.includes('/en/') && !href.includes('/opencart-community/')) {
+                link.setAttribute('href', href.replace('/en/', '/pl/'));
+            }
+
+            // Translate text
+            const span = link.querySelector('.md-ellipsis');
+            const text = span ? span.textContent.trim() : link.textContent.trim();
+            if (!text || text === 'none') return;
+
+            if (translations[text]) {
+                if (span) span.textContent = translations[text];
+                else link.textContent = translations[text];
+            }
+        });
+
+        // Fix header logo link
+        const logoLink = document.querySelector('.md-logo');
+        if (logoLink) {
+            const href = logoLink.getAttribute('href');
+            if (href && href.includes('/en/') && !href.includes('/opencart-community/')) {
+                logoLink.setAttribute('href', href.replace('/en/', '/pl/'));
+            }
+        }
+    }
+
+    // Run after delays to ensure DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', translateNavigation);
+    } else {
+        translateNavigation();
+    }
+    setTimeout(translateNavigation, 500);
+    setTimeout(translateNavigation, 1000);
 })();
