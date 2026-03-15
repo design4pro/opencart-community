@@ -8,7 +8,7 @@ description: Official documentation for OpenCart language packs by DESIGN4ᴾᴿ
     <canvas data-engine="TubesCursor" width="2560" height="1600"></canvas>
   </div>
   <div class="hero-content">
-    <h1>OpenCart Development Solutions</h1>
+    <h1>OpenCart<br>Development<br>Solutions</h1>
     <p>Build powerful multilingual e-commerce experiences</p>
     <div class="cta-buttons">
       <a class="cta-primary" href="getting-started/installation/">Get Started</a>
