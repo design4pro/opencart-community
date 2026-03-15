@@ -52,7 +52,9 @@ nav = [
     ]},
     { "Extensions" = [
         "extensions/polish.md",
-        "extensions/lithuanian.md"
+        "extensions/lithuanian.md",
+        "extensions/estonian.md",
+        "extensions/romanian.md"
     ]},
     { "FAQ" = "faq/index.md" },
     { "Troubleshooting" = "troubleshooting/index.md" },
