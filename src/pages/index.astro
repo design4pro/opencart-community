@@ -1,0 +1,116 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ParticleCanvas from '../components/ParticleCanvas.tsx';
+---
+
+<BaseLayout title="Home" description="Official documentation for OpenCart language packs by DESIGN4ᴾᴿᴼ">
+  <div class="flex min-h-screen flex-col bg-[hsl(var(--background))]">
+    <Header currentPath="/" />
+
+    <!-- Hero section -->
+    <main class="relative flex-1">
+      <!-- Particle canvas background -->
+      <div id="attractor" class="relative flex min-h-[calc(100vh-4rem)] items-center justify-center overflow-hidden">
+        <ParticleCanvas client:load />
+
+        <!-- Hero content -->
+        <div class="relative z-10 mx-auto max-w-4xl px-4 py-24 text-center sm:px-6 lg:px-8">
+          <div class="mb-6 inline-flex items-center rounded-full border border-[#04B6F0]/30 bg-[#04B6F0]/10 px-4 py-1.5 text-sm font-medium text-[#04B6F0]">
+            OpenCart 4.1.x Only
+          </div>
+
+          <h1 class="mb-6 font-display text-5xl font-bold leading-tight tracking-tight text-[hsl(var(--foreground))] sm:text-6xl lg:text-7xl">
+            OpenCart<br />
+            <span class="text-[#04B6F0]">Development</span><br />
+            Solutions
+          </h1>
+
+          <p class="mx-auto mb-10 max-w-2xl text-lg text-[hsl(var(--muted-foreground))] sm:text-xl">
+            Build powerful multilingual e-commerce experiences with professional language packs for OpenCart.
+          </p>
+
+          <div class="flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <a
+              href="/getting-started/installation/"
+              class="inline-flex h-11 items-center justify-center rounded-md bg-[#04B6F0] px-8 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#0398cc] hover:shadow-[0_0_20px_rgba(4,182,240,0.4)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#04B6F0]"
+            >
+              Get Started
+            </a>
+            <a
+              href="/extensions/polish/"
+              class="inline-flex h-11 items-center justify-center rounded-md border border-[hsl(var(--border))] bg-[hsl(var(--background)/0.8)] px-8 text-sm font-semibold text-[hsl(var(--foreground))] backdrop-blur transition-colors hover:bg-[hsl(var(--muted))]"
+            >
+              View Extensions
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature grid -->
+      <section class="border-t border-[hsl(var(--border))] py-20">
+        <div class="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
+          <div class="mb-12 text-center">
+            <h2 class="mb-3 font-display text-3xl font-bold text-[hsl(var(--foreground))]">Available Language Packs</h2>
+            <p class="text-[hsl(var(--muted-foreground))]">Complete, professional translations for OpenCart 4.1.x</p>
+          </div>
+
+          <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { lang: 'Polish', code: 'pl', href: '/extensions/polish/', flag: '🇵🇱', currency: 'PLN' },
+              { lang: 'Lithuanian', code: 'lt', href: '/extensions/lithuanian/', flag: '🇱🇹', currency: 'EUR' },
+              { lang: 'Estonian', code: 'et', href: '/extensions/estonian/', flag: '🇪🇪', currency: 'EUR' },
+              { lang: 'Romanian', code: 'ro', href: '/extensions/romanian/', flag: '🇷🇴', currency: 'RON' },
+            ].map(({ lang, code, href, flag, currency }) => (
+              <a
+                href={href}
+                class="group relative overflow-hidden rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-6 transition-all hover:border-[#04B6F0]/50 hover:shadow-[0_0_30px_rgba(4,182,240,0.1)]"
+              >
+                <div class="mb-4 flex items-center gap-3">
+                  <span class="text-3xl">{flag}</span>
+                  <div>
+                    <p class="font-semibold text-[hsl(var(--foreground))]">{lang}</p>
+                    <p class="text-xs text-[hsl(var(--muted-foreground))]">oc_language_{code}</p>
+                  </div>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="inline-flex items-center rounded-full bg-[#04B6F0]/10 px-2.5 py-0.5 text-xs font-medium text-[#04B6F0]">
+                    {currency}
+                  </span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[hsl(var(--muted-foreground))] transition-transform group-hover:translate-x-1 group-hover:text-[#04B6F0]">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <!-- Quick links -->
+      <section class="border-t border-[hsl(var(--border))] py-16">
+        <div class="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
+          <div class="grid gap-6 sm:grid-cols-3">
+            {[
+              { title: 'Installation', desc: 'Step-by-step guide to purchase and install language packs.', href: '/getting-started/installation/', icon: '📦' },
+              { title: 'Configuration', desc: 'Configure OpenCart for multiple languages in your store.', href: '/getting-started/configuration/', icon: '⚙️' },
+              { title: 'FAQ', desc: 'Answers to the most commonly asked questions.', href: '/faq/', icon: '❓' },
+            ].map(({ title, desc, href, icon }) => (
+              <a
+                href={href}
+                class="rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-6 transition-all hover:border-[#04B6F0]/50 hover:shadow-sm"
+              >
+                <div class="mb-3 text-2xl">{icon}</div>
+                <h3 class="mb-2 font-semibold text-[hsl(var(--foreground))]">{title}</h3>
+                <p class="text-sm text-[hsl(var(--muted-foreground))]">{desc}</p>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <Footer />
+  </div>
+</BaseLayout>

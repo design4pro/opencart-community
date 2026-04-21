@@ -1,0 +1,25 @@
+---
+import { getCollection, render } from 'astro:content';
+import DocsLayout from '../layouts/DocsLayout.astro';
+
+export async function getStaticPaths() {
+  const docs = await getCollection('docs');
+  return docs.map(entry => {
+    // entry.id is the file path relative to the loader base (e.g. "getting-started/installation.md")
+    // Strip .md extension and normalize "index" entries
+    const id = entry.id.replace(/\.md$/, '');
+    const slug = id.replace(/\/index$/, '').replace(/^index$/, '') || undefined;
+    return {
+      params: { slug },
+      props: { entry },
+    };
+  });
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<DocsLayout title={entry.data.title} description={entry.data.description}>
+  <Content />
+</DocsLayout>

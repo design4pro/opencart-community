@@ -1,0 +1,61 @@
+---
+import { navigation, type NavItem } from '../lib/nav';
+
+interface Props {
+  currentPath: string;
+}
+
+const { currentPath } = Astro.props;
+---
+
+<nav aria-label="Documentation navigation">
+  <ul class="space-y-1">
+    {navigation.map((item: NavItem) => {
+      if (item.items) {
+        const isGroupActive = item.items.some(child => currentPath === child.href || currentPath.startsWith((child.href ?? '') + ''));
+        return (
+          <li>
+            <p class={`mb-1 px-3 text-xs font-semibold uppercase tracking-wider ${isGroupActive ? 'text-[hsl(var(--foreground))]' : 'text-[hsl(var(--muted-foreground))]'}`}>
+              {item.label}
+            </p>
+            <ul class="space-y-0.5">
+              {item.items.map((child: NavItem) => {
+                const isActive = currentPath === child.href;
+                return (
+                  <li>
+                    <a
+                      href={child.href}
+                      class={`flex items-center rounded-md px-3 py-1.5 text-sm transition-colors ${
+                        isActive
+                          ? 'bg-[hsl(var(--primary)/0.08)] font-medium text-[hsl(var(--primary))] border-l-2 border-[hsl(var(--primary))] ml-0 pl-[calc(0.75rem-2px)]'
+                          : 'text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--muted))] hover:text-[hsl(var(--foreground))]'
+                      }`}
+                    >
+                      {child.label}
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </li>
+        );
+      }
+
+      const isActive = currentPath === item.href;
+      return (
+        <li>
+          <a
+            href={item.href}
+            class={`flex items-center rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+              isActive
+                ? 'bg-[hsl(var(--primary)/0.08)] text-[hsl(var(--primary))] border-l-2 border-[hsl(var(--primary))] pl-[calc(0.75rem-2px)]'
+                : 'text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--muted))] hover:text-[hsl(var(--foreground))]'
+            }`}
+          >
+            {item.label}
+          </a>
+        </li>
+      );
+    })}
+  </ul>
+</nav>
